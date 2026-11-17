@@ -34,7 +34,7 @@ function Report({ text }: { text: string }) {
         return (
           <p key={i} className="flex gap-2">
             <span className={cn("mt-0.5 grid size-4 shrink-0 place-items-center rounded-full",
-              ok ? "bg-emerald-400/15 text-emerald-300" : "bg-red-400/15 text-red-300")}>
+              ok ? "bg-success/15 text-success" : "bg-danger/15 text-danger")}>
               {ok ? <Check className="size-3" /> : <X className="size-3" />}
             </span>
             <span className="break-words">{l.slice(1).trim()}</span>
@@ -63,6 +63,7 @@ export function Conversation({ tasks, selected, onSelect, onSuggest, agentName, 
   }, [ordered.length, last?.status, last?.result])
 
   if (!ordered.length) {
+    if (!suggestions.length) return null
     return (
       <div className="flex flex-1 flex-col items-center px-4 pb-6">
         <div className="flex max-w-xl flex-wrap justify-center gap-2">
@@ -104,7 +105,7 @@ export function Conversation({ tasks, selected, onSelect, onSuggest, agentName, 
                 <div className="min-w-0 flex-1 text-[15px] leading-relaxed">
                   {STATUS_TEXT[t.status] && (
                     <p className={cn("mb-1 text-xs font-medium",
-                      t.status === "failed" ? "text-red-300" : t.status === "cancelled" ? "text-muted-foreground" : "text-amber-300")}>
+                      t.status === "failed" ? "text-danger" : t.status === "cancelled" ? "text-muted-foreground" : "text-warning")}>
                       {STATUS_TEXT[t.status]}
                     </p>
                   )}

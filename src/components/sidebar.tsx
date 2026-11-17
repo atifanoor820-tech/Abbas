@@ -51,13 +51,13 @@ export function Sidebar(p: Props) {
           <div className="flex items-center gap-1.5">
             <p className="font-semibold tracking-tight">{agentName}</p>
             {isDashi && (
-              <span className="rounded-full bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-amber-300">
+              <span className="rounded-full bg-warning/20 px-1.5 py-0.5 text-[10px] font-semibold text-warning">
                 ShowMyTrades
               </span>
             )}
           </div>
           <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <span className={cn("size-1.5 rounded-full", p.connected ? "bg-emerald-400" : "bg-red-400")} />
+            <span className={cn("size-1.5 rounded-full", p.connected ? "bg-success" : "bg-danger")} />
             {p.connected ? "online" : "offline"} · {isDashi ? "Trading Agent" : "Desktop Agent"}
           </p>
         </div>
@@ -98,7 +98,7 @@ export function Sidebar(p: Props) {
               onClick={() => {
                 if (confirm(`Delete “${c.title}” and ${agentName}'s memory of it? Long-term memories are kept.`)) p.onDelete(c.id)
               }}
-              className="absolute right-2 top-1/2 hidden -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:text-red-300 group-hover:block"
+              className="absolute right-2 top-1/2 hidden -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:text-danger group-hover:block"
             >
               <Trash2 className="size-3.5" />
             </button>
@@ -125,7 +125,7 @@ export function Sidebar(p: Props) {
           <span className="ml-auto flex gap-1">
             {dots.map((d) => (
               <span key={d.label} title={`${d.label}: ${d.ok ? "ready" : "not configured"}`}
-                    className={cn("size-1.5 rounded-full", d.ok ? "bg-emerald-400" : "bg-amber-400")} />
+                    className={cn("size-1.5 rounded-full", d.ok ? "bg-success" : "bg-warning")} />
             ))}
           </span>
         </button>

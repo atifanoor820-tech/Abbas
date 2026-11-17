@@ -325,7 +325,7 @@ export default function Home() {
             <Menu className="size-5" />
           </button>
           <h1 className="min-w-0 flex-1 truncate text-sm font-medium">{current?.title ?? "New conversation"}</h1>
-          {statusError && <span className="hidden text-xs text-red-300 sm:inline">Agent service unreachable</span>}
+          {statusError && <span className="hidden text-xs text-danger sm:inline">Agent service unreachable</span>}
           {!DASHI_ONLY && <AgentSwitch
             value={status?.agent?.active}
             onChange={async (agent) => {
@@ -342,7 +342,7 @@ export default function Home() {
               }
             }}
           />}
-          <AutonomySwitch
+          {!DASHI_ONLY && <AutonomySwitch
             value={status?.actions.autonomy}
             onChange={async (level) => {
               try {
@@ -356,7 +356,7 @@ export default function Home() {
                 setNotice((e as Error).message)
               }
             }}
-          />
+          />}
           <button type="button" onClick={() => setPanel("task")} disabled={!detail}
                   className="hidden items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-40 sm:flex">
             <PanelRightOpen className="size-4" /> Details
@@ -366,7 +366,7 @@ export default function Home() {
             onClick={emergencyStop}
             className={cn("flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
               anyActive || voiceState !== "idle"
-                ? "bg-red-500/15 text-red-300 ring-1 ring-red-500/40 hover:bg-red-500/25"
+                ? "bg-danger/15 text-danger ring-1 ring-danger/40 hover:bg-danger/25"
                 : "text-muted-foreground hover:bg-accent hover:text-foreground")}
           >
             <OctagonX className="size-4" /> Stop
@@ -398,7 +398,7 @@ export default function Home() {
         )}
 
         {(DASHI_ONLY || status?.agent?.active === "dashi") && (
-          <DashiActions onSend={sendText} busy={anyActive} />
+          <DashiActions onSend={sendText} busy={anyActive} big={tasks.length === 0} />
         )}
 
         <Composer

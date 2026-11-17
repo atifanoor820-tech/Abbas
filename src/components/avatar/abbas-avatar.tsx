@@ -84,29 +84,17 @@ export function AbbasAvatar({ mood, level = 0, size = 200, activityIcon: Icon, c
     return () => clearTimeout(t)
   }, [reduce])
 
-  const auraScale = mood === "listening" || mood === "speaking" ? 1 + Math.min(1, level) * 0.28 : 1
   const eyeOpen = blink && mood !== "success" ? 0.08 : eyes.open
 
   return (
     <div className={cn("relative grid shrink-0 place-items-center", className)} style={{ width: size, height: size }}
-         role="img" aria-label={`Abbas is ${mood}`}>
-      {/* Aura */}
-      <motion.div
-        className="absolute inset-0 rounded-full blur-2xl"
-        style={{ background: `radial-gradient(circle, ${color} 0%, transparent 65%)` }}
-        animate={reduce ? { opacity: 0.35 } : {
-          opacity: mood === "idle" ? [0.22, 0.34, 0.22] : 0.45,
-          scale: mood === "idle" ? [0.92, 1.02, 0.92] : auraScale,
-        }}
-        transition={mood === "idle" ? { duration: 4.5, repeat: Infinity, ease: "easeInOut" } : { type: "spring", stiffness: 180, damping: 18 }}
-      />
-
+         role="img" aria-label={`Assistant is ${mood}`}>
       {/* Activity ring */}
       {!small && (
         <motion.svg viewBox="0 0 100 100" className="absolute inset-0"
                     animate={busy && !reduce ? { rotate: 360 } : { rotate: 0 }}
                     transition={busy ? { duration: mood === "thinking" ? 2.4 : 1.4, repeat: Infinity, ease: "linear" } : { duration: 0.6 }}>
-          <circle cx="50" cy="50" r="47" fill="none" stroke="oklch(1 0 0 / 6%)" strokeWidth="0.8" />
+          <circle cx="50" cy="50" r="47" fill="none" stroke="var(--border)" strokeWidth="0.8" />
           <motion.circle
             cx="50" cy="50" r="47" fill="none" stroke={color} strokeWidth="1.2" strokeLinecap="round"
             animate={{
@@ -125,7 +113,7 @@ export function AbbasAvatar({ mood, level = 0, size = 200, activityIcon: Icon, c
                       exit={{ opacity: 0 }} transition={{ rotate: { duration: 6, repeat: Infinity, ease: "linear" } }}>
             {[0, 120, 240].map((deg) => (
               <span key={deg} className="absolute left-1/2 top-1/2 size-1.5 rounded-full"
-                    style={{ background: color, boxShadow: `0 0 10px ${color}`,
+                    style={{ background: color,
                              transform: `rotate(${deg}deg) translateY(-${size * 0.5}px)` }} />
             ))}
           </motion.div>
@@ -140,17 +128,9 @@ export function AbbasAvatar({ mood, level = 0, size = 200, activityIcon: Icon, c
         animate={reduce ? {} : mood === "idle" ? { y: [0, -3, 0] } : mood === "error" ? { x: [0, -3, 3, -2, 0] } : { y: 0, x: 0 }}
         transition={mood === "idle" ? { duration: 4.5, repeat: Infinity, ease: "easeInOut" } : { duration: 0.45 }}
       >
-        <defs>
-          <radialGradient id="abbas-glass" cx="35%" cy="28%" r="80%">
-            <stop offset="0%" stopColor="oklch(0.36 0.03 255)" />
-            <stop offset="60%" stopColor="oklch(0.2 0.02 260)" />
-            <stop offset="100%" stopColor="oklch(0.15 0.015 260)" />
-          </radialGradient>
-        </defs>
-        <circle cx="50" cy="50" r="46" fill="url(#abbas-glass)" />
-        <motion.circle cx="50" cy="50" r="45.5" fill="none" strokeWidth="1"
-                       animate={{ stroke: color, strokeOpacity: 0.55 }} transition={{ duration: 0.5 }} />
-        <ellipse cx="38" cy="22" rx="16" ry="7" fill="oklch(1 0 0 / 7%)" />
+        <circle cx="50" cy="50" r="46" fill="var(--card)" />
+        <motion.circle cx="50" cy="50" r="45.5" fill="none" strokeWidth="1.5"
+                       animate={{ stroke: color, strokeOpacity: 0.7 }} transition={{ duration: 0.5 }} />
 
         {/* Eyes */}
         {[36, 64].map((cx) => (
@@ -164,7 +144,6 @@ export function AbbasAvatar({ mood, level = 0, size = 200, activityIcon: Icon, c
               fill: color,
             }}
             transition={{ type: "spring", stiffness: 420, damping: 28 }}
-            style={{ filter: `drop-shadow(0 0 3px ${color})` }}
           />
         ))}
 
@@ -182,7 +161,7 @@ export function AbbasAvatar({ mood, level = 0, size = 200, activityIcon: Icon, c
           <motion.div
             key={Icon.displayName ?? "icon"}
             initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }}
-            className="absolute bottom-[6%] right-[6%] grid place-items-center rounded-full border border-border bg-popover shadow-lg"
+            className="absolute bottom-[6%] right-[6%] grid place-items-center rounded-full border border-border bg-popover shadow-sm"
             style={{ width: size * 0.22, height: size * 0.22, color }}
           >
             <Icon style={{ width: size * 0.11, height: size * 0.11 }} />

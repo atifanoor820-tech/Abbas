@@ -35,7 +35,12 @@ function Segmented<T extends string>({ value, options, onChange }: {
 }
 
 /** Dashi's actions above the composer: save accounts, update them on ShowMyTrades, list them, check them all. */
-export function DashiActions({ onSend, busy }: { onSend: (text: string) => Promise<void>; busy?: boolean }) {
+export function DashiActions({ onSend, busy, big }: {
+  onSend: (text: string) => Promise<void>
+  busy?: boolean
+  /** Large cards with a one-line explanation each (start screen); small pills once a chat is going. */
+  big?: boolean
+}) {
   const [mode, setMode] = useState<Mode>(null)
   const [config, setConfig] = useState<DashiConfig | null>(null)
   const [error, setError] = useState("")
@@ -63,14 +68,18 @@ export function DashiActions({ onSend, busy }: { onSend: (text: string) => Promi
     await onSend("saved accounts check karo")
   }
 
-  const tabs: { m: Exclude<Mode, null>; label: string; icon: typeof Plus }[] = [
-    { m: "add", label: "Add accounts", icon: Plus },
-    { m: "update", label: "Update on ShowMyTrades", icon: RefreshCw },
-    { m: "saved", label: "Saved accounts", icon: ListChecks },
+  const tabs: { m: Exclude<Mode, null>; label: string; hint: string; icon: typeof Plus }[] = [
+    { m: "add", label: "Add accounts", icon: Plus,
+      hint: "Save account number, password and server. Nothing changes on ShowMyTrades yet." },
+    { m: "update", label: "Update on ShowMyTrades", icon: RefreshCw,
+      hint: "Reconnect saved accounts on ShowMyTrades and make them public." },
+    { m: "saved", label: "Saved accounts", icon: ListChecks,
+      hint: "See every account you saved and update one with a click." },
   ]
+  const checkHint = "Look up all saved accounts on ShowMyTrades and see which are live. Changes nothing."
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 pb-2 sm:px-6">
+    <div className={cn("mx-auto w-full max-w-3xl px-4 pb-2 sm:px-6", big && "mb-auto pb-6")}>
       {mode && (
         <div className="mb-2 rounded-2xl border border-border bg-card/80 p-4 backdrop-blur">
           <div className="mb-3 flex items-center justify-between">
@@ -79,7 +88,7 @@ export function DashiActions({ onSend, busy }: { onSend: (text: string) => Promi
               <X className="size-4" />
             </button>
           </div>
-          {error && <p className="mb-2 text-xs text-red-300">{error}</p>}
+          {error && <p className="mb-2 text-xs text-danger">{error}</p>}
           {mode === "add" && config && <AddForm config={config} onSaved={setConfig} />}
           {mode === "update" && config && (
             <UpdateForm accounts={accounts} busy={busy} onUpdate={runUpdate} onAddFirst={() => setMode("add")} />
@@ -95,33 +104,48 @@ export function DashiActions({ onSend, busy }: { onSend: (text: string) => Promi
         </div>
       )}
 
-      <div className="flex flex-wrap justify-center gap-2">
-        {tabs.map(({ m, label, icon: Icon }) => (
-          <button
-            key={m}
-            type="button"
-            onClick={() => toggle(m)}
-            aria-pressed={mode === m}
-            className={cn(
-              "flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition-colors",
-              mode === m
-                ? "border-brand/50 bg-brand/10 text-foreground"
-                : "border-border bg-secondary/40 text-muted-foreground hover:border-brand/40 hover:text-foreground",
-            )}
-          >
-            <Icon className="size-3.5" /> {label}
+      {big && !mode ? (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {tabs.map(({ m, label, hint, icon: Icon }) => (
+            <button key={m} type="button" onClick={() => toggle(m)} aria-pressed={mode === m}
+                    className={cn("flex items-start gap-3 rounded-xl border bg-card p-4 text-left transition-colors",
+                      mode === m ? "border-brand ring-1 ring-brand" : "border-border hover:border-brand/60")}>
+              <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-brand/10 text-brand">
+                <Icon className="size-4.5" />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold">{label}</span>
+                <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">{hint}</span>
+              </span>
+            </button>
+          ))}
+          <button type="button" disabled={busy} onClick={() => void checkAll()}
+                  className="flex items-start gap-3 rounded-xl border border-border bg-card p-4 text-left transition-colors hover:border-brand/60 disabled:opacity-50">
+            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-brand/10 text-brand">
+              <ScanSearch className="size-4.5" />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-sm font-semibold">Check all accounts</span>
+              <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">{checkHint}</span>
+            </span>
           </button>
-        ))}
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => void checkAll()}
-          title="Look up every saved account on ShowMyTrades, one by one (changes nothing)"
-          className="flex items-center gap-1.5 rounded-full border border-border bg-secondary/40 px-3.5 py-1.5 text-sm text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground disabled:opacity-50"
-        >
-          <ScanSearch className="size-3.5" /> Check all
-        </button>
-      </div>
+        </div>
+      ) : (
+        <div className="flex flex-wrap justify-center gap-2">
+          {tabs.map(({ m, label, hint, icon: Icon }) => (
+            <button key={m} type="button" onClick={() => toggle(m)} aria-pressed={mode === m} title={hint}
+                    className={cn("flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition-colors",
+                      mode === m ? "border-brand bg-brand/10 text-foreground"
+                        : "border-border bg-card text-muted-foreground hover:border-brand/60 hover:text-foreground")}>
+              <Icon className="size-3.5" /> {label}
+            </button>
+          ))}
+          <button type="button" disabled={busy} onClick={() => void checkAll()} title={checkHint}
+                  className="flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 text-sm text-muted-foreground transition-colors hover:border-brand/60 hover:text-foreground disabled:opacity-50">
+            <ScanSearch className="size-3.5" /> Check all
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -261,7 +285,7 @@ function UpdateForm({ accounts, busy, onUpdate, onAddFirst }: {
       <input value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Type account numbers (space or comma separated)…"
              className={cn(field, "font-mono")} autoFocus />
       {(unknown.length > 0 || notReady.length > 0) && (
-        <p className="text-xs text-amber-300">
+        <p className="text-xs text-warning">
           {unknown.length > 0 && <>Not saved: {unknown.join(", ")}. <button type="button" onClick={onAddFirst} className="underline">Add first</button>. </>}
           {notReady.length > 0 && <>Missing password or server: {notReady.join(", ")}.</>}
         </p>
@@ -327,7 +351,7 @@ function SavedList({ accounts, profiles, busy, onUpdate }: {
           const profile = profiles.find((p) => p.id === a.profile_id)
           return (
             <div key={a.id} className="flex items-center gap-3 py-2 text-sm">
-              <span className={cn("size-1.5 shrink-0 rounded-full", ok ? "bg-emerald-400" : "bg-amber-400")} />
+              <span className={cn("size-1.5 shrink-0 rounded-full", ok ? "bg-success" : "bg-warning")} />
               <span className="font-mono">{a.account_number}</span>
               <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
                 {a.server || "no server"}{profile ? ` · ${profile.name.replace("ShowMyTrades ", "")}` : ""}

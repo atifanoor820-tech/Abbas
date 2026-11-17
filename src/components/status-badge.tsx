@@ -4,12 +4,12 @@ import { cn } from "@/lib/utils"
 
 const STYLES: Record<TaskStatus, string> = {
   created: "bg-muted text-muted-foreground",
-  running: "bg-sky-500/15 text-sky-300",
-  awaiting_approval: "bg-amber-500/15 text-amber-300",
-  blocked: "bg-orange-500/15 text-orange-300",
+  running: "bg-info/15 text-info",
+  awaiting_approval: "bg-warning/15 text-warning",
+  blocked: "bg-warning/15 text-warning",
   cancelled: "bg-muted text-muted-foreground",
-  completed: "bg-emerald-500/15 text-emerald-300",
-  failed: "bg-red-500/15 text-red-300",
+  completed: "bg-success/15 text-success",
+  failed: "bg-danger/15 text-danger",
 }
 
 const LABELS: Record<TaskStatus, string> = {
@@ -27,7 +27,7 @@ export function StatusBadge({ status }: { status: TaskStatus }) {
 }
 
 export function RiskBadge({ risk }: { risk: "low" | "medium" | "high" }) {
-  const style = { low: "text-emerald-300 border-emerald-500/30", medium: "text-amber-300 border-amber-500/30", high: "text-red-300 border-red-500/30" }[risk]
+  const style = { low: "text-success border-success/30", medium: "text-warning border-warning/30", high: "text-danger border-danger/30" }[risk]
   return (
     <Badge variant="outline" className={style}>
       {risk} risk

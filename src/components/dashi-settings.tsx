@@ -162,7 +162,7 @@ export function DashiSettings() {
       </div>
     )
   }
-  if (!config) return error ? <p className="text-xs text-red-300">{error}</p> : null
+  if (!config) return error ? <p className="text-xs text-danger">{error}</p> : null
 
   const linked = config.profiles.filter((p) => p.email && p.password).length
   const accounts = config.trading_accounts
@@ -194,7 +194,7 @@ export function DashiSettings() {
         </div>
       </div>
 
-      {error && <p className="text-xs text-red-300">{error}</p>}
+      {error && <p className="text-xs text-danger">{error}</p>}
 
       {/* Profiles (collapsed by default) */}
       <div className={cn(!DASHI_ONLY && "border-t border-border pt-4")}>
@@ -224,7 +224,7 @@ export function DashiSettings() {
                 <div key={p.id || idx} className="py-1">
                   <div className="grid grid-cols-[auto_1fr_1fr_auto_auto] items-center gap-1 sm:grid-cols-[auto_1fr_1.3fr_1fr_auto_auto]">
                     <span
-                      className={cn("size-1.5 rounded-full", ready ? "bg-emerald-400" : "bg-muted-foreground/40")}
+                      className={cn("size-1.5 rounded-full", ready ? "bg-success" : "bg-muted-foreground/40")}
                       title={ready ? "Login saved" : "No login yet"}
                     />
                     <input
@@ -257,7 +257,7 @@ export function DashiSettings() {
                     <button
                       type="button"
                       onClick={() => removeProfile(idx)}
-                      className="row-start-1 col-start-5 p-1 text-muted-foreground hover:text-red-400 sm:col-auto sm:row-auto"
+                      className="row-start-1 col-start-5 p-1 text-muted-foreground hover:text-danger sm:col-auto sm:row-auto"
                       title="Remove profile"
                     >
                       <X className="size-3.5" />
@@ -344,7 +344,7 @@ export function DashiSettings() {
                 className="grid grid-cols-[auto_1fr_1fr_auto] items-center gap-1 py-1 sm:grid-cols-[auto_1fr_1.4fr_0.9fr_1.1fr_auto]"
               >
                 <span
-                  className={cn("size-1.5 rounded-full", incomplete ? "bg-amber-400" : "bg-emerald-400")}
+                  className={cn("size-1.5 rounded-full", incomplete ? "bg-warning" : "bg-success")}
                   title={
                     (incomplete ? "Missing number, password or server" : "Ready") +
                     (profile ? ` · last found in ${profile.name}` : "")
@@ -388,7 +388,7 @@ export function DashiSettings() {
                 <button
                   type="button"
                   onClick={() => removeAccount(idx)}
-                  className="row-start-1 col-start-4 p-1 text-muted-foreground hover:text-red-400 sm:col-auto sm:row-auto"
+                  className="row-start-1 col-start-4 p-1 text-muted-foreground hover:text-danger sm:col-auto sm:row-auto"
                   title="Remove account"
                 >
                   <X className="size-3.5" />
@@ -403,7 +403,7 @@ export function DashiSettings() {
       {(dirty || saved) && (
         <div className="sticky bottom-4 flex items-center justify-end gap-3 rounded-lg border border-border bg-background/90 px-3 py-2 backdrop-blur">
           {saved && !dirty ? (
-            <span className="flex items-center gap-1 text-xs text-emerald-400">
+            <span className="flex items-center gap-1 text-xs text-success">
               <Check className="size-3.5" /> Saved
             </span>
           ) : (

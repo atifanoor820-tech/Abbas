@@ -14,10 +14,10 @@ function Row({ icon: Icon, title, ok, detail, setup }: {
       <div className="flex items-center gap-2 text-sm">
         <Icon className="size-4 text-muted-foreground" />
         <span className="font-medium">{title}</span>
-        <span className={cn("ml-auto size-2 rounded-full", ok ? "bg-emerald-400" : "bg-amber-400")} />
+        <span className={cn("ml-auto size-2 rounded-full", ok ? "bg-success" : "bg-warning")} />
       </div>
       <p className="text-xs text-muted-foreground">{detail}</p>
-      {setup && <code className="block break-all rounded bg-background px-2 py-1 text-[11px] text-amber-200">{setup}</code>}
+      {setup && <code className="block break-all rounded bg-background px-2 py-1 text-[11px] text-warning/90">{setup}</code>}
     </div>
   )
 }
@@ -29,7 +29,7 @@ function engineDetail(e: EngineStatus, extra: string) {
 export function StatusPanel({ status, error }: { status: SystemStatus | null; error: string | null }) {
   if (error) {
     return (
-      <div className="m-4 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">
+      <div className="m-4 rounded-lg border border-danger/30 bg-danger/10 p-3 text-sm text-danger/90">
         Agent service unreachable: {error}
         <code className="mt-2 block text-[11px]">uv run uvicorn services.agent_api.main:app --port 8000</code>
       </div>
@@ -92,7 +92,7 @@ export function StatusPanel({ status, error }: { status: SystemStatus | null; er
           {status.tools.map((t) => (
             <li key={t.name} className="text-xs">
               <span className="font-mono text-foreground">{t.name}</span>
-              {t.risk !== "low" && <span className="ml-1.5 text-amber-300">({t.risk} risk · approval)</span>}
+              {t.risk !== "low" && <span className="ml-1.5 text-warning">({t.risk} risk · approval)</span>}
               <p className="text-muted-foreground">{t.description}</p>
             </li>
           ))}

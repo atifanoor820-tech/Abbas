@@ -26,20 +26,20 @@ function stepStates(task: Task): StepState[] {
 }
 
 const EVENT_TONE: Record<string, string> = {
-  review_completed: "text-violet-300",
+  review_completed: "text-info",
   tool_output: "text-muted-foreground",
-  tool_completed: "text-emerald-300",
-  task_completed: "text-emerald-300",
-  file_created: "text-emerald-300",
-  file_updated: "text-emerald-300",
-  tool_failed: "text-red-300",
-  task_failed: "text-red-300",
-  approval_required: "text-amber-300",
-  task_blocked: "text-orange-300",
+  tool_completed: "text-success",
+  task_completed: "text-success",
+  file_created: "text-success",
+  file_updated: "text-success",
+  tool_failed: "text-danger",
+  task_failed: "text-danger",
+  approval_required: "text-warning",
+  task_blocked: "text-warning",
   task_cancelled: "text-muted-foreground",
   decision_made: "text-lime-300",
-  memory_saved: "text-violet-300",
-  memory_deleted: "text-violet-300",
+  memory_saved: "text-info",
+  memory_deleted: "text-info",
 }
 
 function time(iso: string) {
@@ -50,7 +50,7 @@ function time(iso: string) {
 
 const ENGINE_STYLE: Record<string, string> = {
   jev: "bg-lime-400/15 text-lime-300",
-  gemini: "bg-sky-400/15 text-sky-300",
+  gemini: "bg-info/15 text-info",
   local: "bg-muted text-muted-foreground",
   none: "bg-muted text-muted-foreground",
 }
@@ -77,7 +77,7 @@ function Decision({ event }: { event: TaskEvent }) {
         )}
       </div>
       <p className="break-words text-muted-foreground">{event.message}</p>
-      {errors.length > 0 && <p className="text-[11px] text-amber-300/80">fell back after: {errors.join("; ")}</p>}
+      {errors.length > 0 && <p className="text-[11px] text-warning/80">fell back after: {errors.join("; ")}</p>}
     </div>
   )
 }
@@ -142,12 +142,12 @@ export function TaskPanel({ task, onChanged }: { task: Task | null; onChanged: (
       </div>
 
       {task.status === "awaiting_approval" && (
-        <div className="space-y-3 rounded-xl border border-amber-500/40 bg-amber-500/10 p-3">
+        <div className="space-y-3 rounded-xl border border-warning/40 bg-warning/10 p-3">
           <div className="flex gap-2 text-sm">
-            <ShieldAlert className="mt-0.5 size-4 shrink-0 text-amber-300" />
+            <ShieldAlert className="mt-0.5 size-4 shrink-0 text-warning" />
             <div>
-              <p className="font-medium text-amber-200">Approval required</p>
-              <p className="text-amber-100/80">{spec?.approval_reason}</p>
+              <p className="font-medium text-warning/90">Approval required</p>
+              <p className="text-warning/80">{spec?.approval_reason}</p>
             </div>
           </div>
           <div className="flex gap-2">
@@ -162,8 +162,8 @@ export function TaskPanel({ task, onChanged }: { task: Task | null; onChanged: (
       )}
 
       {spec?.clarification_question && (
-        <div className="flex gap-2 rounded-xl border border-orange-500/30 bg-orange-500/10 p-3 text-sm text-orange-100">
-          <AlertTriangle className="mt-0.5 size-4 shrink-0 text-orange-300" />
+        <div className="flex gap-2 rounded-xl border border-warning/30 bg-warning/10 p-3 text-sm text-warning/90">
+          <AlertTriangle className="mt-0.5 size-4 shrink-0 text-warning" />
           {spec.clarification_question}
         </div>
       )}
@@ -173,9 +173,9 @@ export function TaskPanel({ task, onChanged }: { task: Task | null; onChanged: (
           <ol className="space-y-1.5">
             {spec.plan.map((s, i) => (
               <li key={i} className="flex items-start gap-2 rounded-lg bg-muted/40 px-3 py-2 text-sm">
-                {states[i] === "done" ? <CheckCircle2 className="mt-0.5 size-4 text-emerald-400" />
-                  : states[i] === "failed" ? <XCircle className="mt-0.5 size-4 text-red-400" />
-                  : states[i] === "running" ? <Loader2 className="mt-0.5 size-4 animate-spin text-sky-400" />
+                {states[i] === "done" ? <CheckCircle2 className="mt-0.5 size-4 text-success" />
+                  : states[i] === "failed" ? <XCircle className="mt-0.5 size-4 text-danger" />
+                  : states[i] === "running" ? <Loader2 className="mt-0.5 size-4 animate-spin text-info" />
                   : <Circle className="mt-0.5 size-4 text-muted-foreground" />}
                 <div className="min-w-0 flex-1">
                   <p>{s.description || s.tool}</p>
@@ -222,7 +222,7 @@ export function TaskPanel({ task, onChanged }: { task: Task | null; onChanged: (
             <li key={e.id} className="text-sm">
               <span className="absolute -left-[4.5px] mt-1.5 size-2 rounded-full bg-border" />
               <div className="flex items-baseline gap-2">
-                <span className={cn("font-mono text-[11px]", EVENT_TONE[e.type] ?? "text-sky-300")}>{e.type}</span>
+                <span className={cn("font-mono text-[11px]", EVENT_TONE[e.type] ?? "text-info")}>{e.type}</span>
                 <span className="text-[11px] text-muted-foreground">{time(e.created_at)}</span>
                 {e.type === "screenshot_captured" && <ImageIcon className="size-3 text-muted-foreground" />}
               </div>
@@ -233,7 +233,7 @@ export function TaskPanel({ task, onChanged }: { task: Task | null; onChanged: (
                   {e.message}
                 </pre>
               ) : e.type === "review_completed" ? (
-                <div className="mt-1 space-y-1 rounded-lg border border-violet-400/20 bg-violet-400/5 p-2">
+                <div className="mt-1 space-y-1 rounded-lg border border-info/20 bg-info/5 p-2">
                   <p className="text-muted-foreground">{e.message}</p>
                   {Array.isArray(e.data?.remaining) && (e.data.remaining as string[]).length > 0 && (
                     <ul className="list-inside list-disc text-xs text-muted-foreground/80">
@@ -249,7 +249,7 @@ export function TaskPanel({ task, onChanged }: { task: Task | null; onChanged: (
         </ol>
       </Section>
 
-      {error && <p className="text-sm text-red-300">{error}</p>}
+      {error && <p className="text-sm text-danger">{error}</p>}
 
       <div className="flex gap-2 border-t border-border pt-4">
         {active ? (

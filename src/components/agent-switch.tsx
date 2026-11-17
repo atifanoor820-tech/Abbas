@@ -43,7 +43,7 @@ export function AgentSwitch({ value = "abbas", onChange, disabled }: Props) {
         className={cn(
           "flex items-center gap-1.5 rounded-full px-3 py-1 font-medium transition-all",
           isDashi
-            ? "bg-amber-500 text-black font-semibold shadow-sm shadow-amber-500/30"
+            ? "bg-warning text-black font-semibold shadow-sm shadow-amber-500/30"
             : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
         )}
         title="Dashi: ShowMyTrades multi-profile trading account agent"

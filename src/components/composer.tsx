@@ -119,7 +119,7 @@ export function Composer(p: Props) {
         </div>
 
         <div className="mt-2 flex items-center justify-between px-3 text-[11px] text-muted-foreground/70">
-          <span className={cn(p.micError && "text-amber-300")}>
+          <span className={cn(p.micError && "text-warning")}>
             {p.micError ?? (p.asrReady ? "Enter to send · Shift+Enter for a new line" : `Voice input needs: ${p.asrSetup}`)}
           </span>
           <button type="button" onClick={p.onToggleSpeak} disabled={!p.ttsReady}

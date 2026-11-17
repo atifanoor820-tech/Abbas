@@ -11,9 +11,9 @@ interface Group { name: string; items: Item[] }
 function StateIcon({ state, className }: { state: State; className?: string }) {
   const base = cn("size-3.5 shrink-0", className)
   if (state === "running") return <Loader2 className={cn(base, "animate-spin text-brand")} />
-  if (state === "done") return <Check className={cn(base, "text-emerald-400")} />
-  if (state === "failed") return <X className={cn(base, "text-red-400")} />
-  if (state === "warn") return <AlertTriangle className={cn(base, "text-amber-400")} />
+  if (state === "done") return <Check className={cn(base, "text-success")} />
+  if (state === "failed") return <X className={cn(base, "text-danger")} />
+  if (state === "warn") return <AlertTriangle className={cn(base, "text-warning")} />
   if (state === "skipped") return <Minus className={cn(base, "text-muted-foreground/50")} />
   return <Circle className={cn(base, "text-muted-foreground/40")} />
 }
@@ -84,7 +84,7 @@ export function TaskProgress({ task, events }: { task: Task; events: TaskEvent[]
                 <StateIcon state={st} />
                 <span className={cn("font-mono", st === "pending" && "text-muted-foreground")}>{g.name}</span>
                 <span className={cn("min-w-0 flex-1 truncate text-xs",
-                  st === "failed" ? "text-red-300" : st === "warn" ? "text-amber-300" : "text-muted-foreground")}>
+                  st === "failed" ? "text-danger" : st === "warn" ? "text-warning" : "text-muted-foreground")}>
                   {st === "pending" && !g.items.length ? "waiting" : summary(g.items)}
                 </span>
               </div>

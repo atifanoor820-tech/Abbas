@@ -46,7 +46,7 @@ export function MemoryPanel({ memories, backend, onChanged }: { memories: Memory
                 title="Forget"
                 disabled={busy}
                 onClick={() => void run(() => api.deleteMemory(m.id))}
-                className="text-muted-foreground opacity-60 hover:text-red-300 group-hover:opacity-100"
+                className="text-muted-foreground opacity-60 hover:text-danger group-hover:opacity-100"
               >
                 <X className="size-3.5" />
               </button>
@@ -71,7 +71,7 @@ export function MemoryPanel({ memories, backend, onChanged }: { memories: Memory
           {busy ? <Loader2 className="animate-spin" /> : <Plus />}
         </Button>
       </form>
-      {error && <p className="text-xs text-red-300">{error}</p>}
+      {error && <p className="text-xs text-danger">{error}</p>}
     </div>
   )
 }

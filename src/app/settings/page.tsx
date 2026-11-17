@@ -81,7 +81,7 @@ function AppRow({ app, onToggle }: { app: DesktopApp; onToggle: (on: boolean) =>
           {app.source === "allowlist" ? `built-in · ${app.command}` : app.id}
         </p>
       </div>
-      <span className={cn("hidden text-[11px] sm:inline", app.allowed ? "text-emerald-300" : "text-muted-foreground")}>
+      <span className={cn("hidden text-[11px] sm:inline", app.allowed ? "text-success" : "text-muted-foreground")}>
         {app.allowed ? "Allowed" : "Off"}
       </span>
       <Switch checked={app.allowed} onChange={onToggle} label={`Allow ${app.name}`} />
@@ -111,7 +111,7 @@ function FolderList({ fixed, extra, busy, onChange }: {
             <FolderOpen className="size-4 text-brand" />
             <span className="min-w-0 flex-1 truncate font-mono text-xs">{f}</span>
             <button type="button" disabled={busy} onClick={() => onChange(extra.filter((x) => x !== f))}
-                    className="rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-red-300">
+                    className="rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-danger">
               Remove
             </button>
           </li>
@@ -211,7 +211,7 @@ export default function SettingsPage() {
             <ArrowLeft className="size-4" /> {NAME}
           </Link>
           <h1 className="flex-1 text-sm font-semibold">Settings</h1>
-          <span className={cn("flex items-center gap-1 text-xs text-emerald-300 transition-opacity", saved ? "opacity-100" : "opacity-0")}
+          <span className={cn("flex items-center gap-1 text-xs text-success transition-opacity", saved ? "opacity-100" : "opacity-0")}
                 aria-live="polite">
             <Check className="size-3.5" /> Saved
           </span>
@@ -220,7 +220,7 @@ export default function SettingsPage() {
 
       <main className="mx-auto max-w-3xl space-y-5 px-4 py-6 sm:px-6 sm:py-8">
         {error && (
-          <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">{error}</div>
+          <div className="rounded-xl border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger/90">{error}</div>
         )}
 
         <Section title="Dashi" description="ShowMyTrades profiles and the trading accounts Dashi manages.">

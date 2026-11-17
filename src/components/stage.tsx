@@ -20,8 +20,8 @@ export function Stage({ view, level, compact, context, agentName = "Abbas" }: Pr
   const ctx = context ?? {}
   const displayTitle = agentName === "Dashi" ? view.title.replace(/\bAbbas\b/g, "Dashi") : view.title
   const displayDetail =
-    agentName === "Dashi" && !compact && !view.detail
-      ? "ShowMyTrades multi-profile trading account automation"
+    agentName === "Dashi" && !compact && view.mood === "idle"
+      ? "I save your trading accounts and keep them updated and public on ShowMyTrades. Pick a task below."
       : view.detail
   const chips = [
     ctx.surface === "browser" && ctx.url ? { icon: Globe, label: ctx.page_title || ctx.url } : null,
@@ -34,10 +34,10 @@ export function Stage({ view, level, compact, context, agentName = "Abbas" }: Pr
       layout
       transition={{ type: "spring", stiffness: 260, damping: 30 }}
       className={cn("flex shrink-0 items-center px-4",
-        compact ? "flex-row gap-4 border-b border-border py-3 sm:px-6" : "flex-col justify-center gap-5 py-8 text-center sm:py-12")}
+        compact ? "flex-row gap-4 border-b border-border py-3 sm:px-6" : "mt-auto flex-col justify-center gap-4 py-6 text-center sm:py-8")}
     >
       <motion.div layout>
-        <AbbasAvatar mood={view.mood} level={level} size={compact ? 64 : 200} activityIcon={view.icon} />
+        <AbbasAvatar mood={view.mood} level={level} size={compact ? 48 : 96} activityIcon={view.icon} />
       </motion.div>
 
       <motion.div layout className={cn("min-w-0", compact ? "flex-1" : "max-w-lg")} aria-live="polite">
@@ -47,8 +47,8 @@ export function Stage({ view, level, compact, context, agentName = "Abbas" }: Pr
             initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.18 }}
           >
-            <p className={cn("font-semibold tracking-tight", compact ? "text-base" : "text-2xl")}
-               style={{ color: `var(--mood-${view.mood})` }}>
+            <p className={cn("flex items-center gap-2 font-semibold tracking-tight", compact ? "text-base" : "justify-center text-2xl")}>
+              <span className="size-2 shrink-0 rounded-full" style={{ background: `var(--mood-${view.mood})` }} aria-hidden />
               {displayTitle}
             </p>
             {displayDetail && (
