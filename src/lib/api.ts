@@ -1,10 +1,9 @@
 // Abbas is switched off for now: the dashboard shows only Dashi. Set NEXT_PUBLIC_DASHI_ONLY=0 to bring Abbas back.
 export const DASHI_ONLY = process.env.NEXT_PUBLIC_DASHI_ONLY !== "0"
 
-// Deployed backend (Vercel project "backed"). To use a local backend instead, set
-// NEXT_PUBLIC_ABBAS_API=http://127.0.0.1:8000 in frontend/.env.local (baked in at build time).
-const DEPLOYED_BACKEND = "https://backed-swwq.vercel.app"
-export const API = (process.env.NEXT_PUBLIC_ABBAS_API || DEPLOYED_BACKEND).replace(/\/+(api\/?)?$/, "")
+// Backend URL, hardcoded on purpose (no .env). Change this line to point at another backend,
+// e.g. "http://127.0.0.1:8000" for a local one.
+export const API = "https://backed-swwq.vercel.app"
 
 export type TaskStatus =
   | "created"
