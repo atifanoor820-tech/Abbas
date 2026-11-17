@@ -94,6 +94,7 @@ export default function Home() {
   }, [])
   const loadDetail = useCallback(async (id: string | null) => {
     if (!id) return setDetail(null)
+    if (id.startsWith("temp-")) return // placeholder bubble shown before the server returns the real task id
     try { setDetail(await api.task(id)) } catch { setDetail(null) }
   }, [])
 
