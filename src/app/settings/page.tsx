@@ -7,6 +7,7 @@ import {
 import Link from "next/link"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { Switch } from "@/components/ui/switch-toggle"
+import { useAuth } from "@/components/auth"
 import { DashiSettings } from "@/components/dashi-settings"
 import { api, DASHI_ONLY, type AppsView, type Autonomy, type DesktopApp, type RuntimeSettings, type SettingsView } from "@/lib/api"
 import { cn } from "@/lib/utils"
@@ -201,6 +202,7 @@ export default function SettingsPage() {
   }, [apps, query, filter])
 
   const ed = settings?.editable
+  const { isAdmin } = useAuth()
   const NAME = DASHI_ONLY ? "Dashi" : "Abbas"
 
   return (
@@ -227,6 +229,7 @@ export default function SettingsPage() {
           <DashiSettings />
         </Section>
 
+        {isAdmin && (<>
         <Section title={`How freely ${NAME} acts`} description="Changes apply to the next request.">
           <div role="radiogroup" aria-label="Autonomy" className="grid gap-2 sm:grid-cols-3">
             {AUTONOMY.map((o) => {
@@ -276,7 +279,9 @@ export default function SettingsPage() {
           </div>
         </Section>
 
-        {!DASHI_ONLY && (<>
+        </>)}
+
+        {isAdmin && !DASHI_ONLY && (<>
         <Section
           title="Desktop apps"
           description={apps ? `${apps.allowed} of ${apps.total} apps can be opened by Abbas.` : "Loading installed apps…"}
@@ -364,7 +369,7 @@ export default function SettingsPage() {
 
         </>)}
 
-        {settings && (
+        {isAdmin && settings && (
           <Section title="Set in .env" description="Change these in the .env file, then restart the agent service.">
             <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
               {[

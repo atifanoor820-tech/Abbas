@@ -3,6 +3,7 @@
 import { Check, Eye, EyeOff, ListChecks, Loader2, Plus, RefreshCw, ScanSearch, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import { api, type DashiConfig, type DashiTradingAccount } from "@/lib/api"
+import { DASHI_CHANGED } from "@/components/home-hero"
 import { cn } from "@/lib/utils"
 
 type Mode = "add" | "update" | "saved" | null
@@ -175,7 +176,7 @@ function AddForm({ config, onSaved }: { config: DashiConfig; onSaved: (c: DashiC
         ? config.trading_accounts.map((a) => (a.account_number === n ? { ...a, ...details, broker: details.broker || a.broker } : a))
         : [...config.trading_accounts,
            { id: `acc_${Date.now().toString(36)}`, name: `Account ${n}`, platform: "MT5", notes: "", ...details }]
-      onSaved(await api.updateDashi({ ...config, trading_accounts }))
+      onSaved(await api.updateDashi({ ...config, trading_accounts })); window.dispatchEvent(new Event(DASHI_CHANGED))
       setMsg(existing ? `Account ${n} updated.` : `Account ${n} saved.`)
       setNum(""); setPassword(""); setServer(""); setBroker("")
     } catch (e) {
@@ -190,7 +191,7 @@ function AddForm({ config, onSaved }: { config: DashiConfig; onSaved: (c: DashiC
       setSaving(true)
       setMsg("")
       const res = await api.importDashiAccounts(text)
-      onSaved(res.config)
+      onSaved(res.config); window.dispatchEvent(new Event(DASHI_CHANGED))
       if (!res.found) {
         setMsg("No account numbers found.")
         return

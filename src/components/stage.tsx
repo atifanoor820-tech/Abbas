@@ -3,6 +3,7 @@
 import { AppWindow, FileText, Globe } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 import { AbbasAvatar } from "@/components/avatar/abbas-avatar"
+import { DashiMark } from "@/components/brand"
 import type { AvatarView } from "@/hooks/use-avatar"
 import type { ConversationState } from "@/lib/api"
 import { cn } from "@/lib/utils"
@@ -37,7 +38,9 @@ export function Stage({ view, level, compact, context, agentName = "Abbas" }: Pr
         compact ? "flex-row gap-4 border-b border-border py-3 sm:px-6" : "mt-auto flex-col justify-center gap-4 py-6 text-center sm:py-8")}
     >
       <motion.div layout>
-        <AbbasAvatar mood={view.mood} level={level} size={compact ? 48 : 96} activityIcon={view.icon} />
+        {agentName === "Dashi"
+          ? <DashiMark size={compact ? 40 : 72} busy={view.mood === "acting" || view.mood === "thinking"} />
+          : <AbbasAvatar mood={view.mood} level={level} size={compact ? 48 : 96} activityIcon={view.icon} />}
       </motion.div>
 
       <motion.div layout className={cn("min-w-0", compact ? "flex-1" : "max-w-lg")} aria-live="polite">

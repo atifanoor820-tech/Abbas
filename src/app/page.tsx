@@ -7,6 +7,7 @@ import { AutonomySwitch } from "@/components/autonomy-switch"
 import { Composer, type VoiceState } from "@/components/composer"
 import { Conversation } from "@/components/conversation"
 import { DashiActions } from "@/components/dashi-actions"
+import { HomeHero } from "@/components/home-hero"
 import { Drawer } from "@/components/drawer"
 import { MemoryPanel } from "@/components/memory-panel"
 import { Sidebar } from "@/components/sidebar"
@@ -373,13 +374,17 @@ export default function Home() {
           </button>
         </header>
 
-        <Stage
-          view={avatar.view}
-          level={level}
-          compact={tasks.length > 0}
-          context={convState?.context}
-          agentName={agentName}
-        />
+        {DASHI_ONLY && tasks.length === 0 ? (
+          <HomeHero />
+        ) : (
+          <Stage
+            view={avatar.view}
+            level={level}
+            compact={tasks.length > 0}
+            context={convState?.context}
+            agentName={agentName}
+          />
+        )}
 
         <Conversation
           tasks={tasks}

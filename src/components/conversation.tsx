@@ -4,6 +4,7 @@ import { Check, ChevronRight, Keyboard, Loader2, Mic, X } from "lucide-react"
 import { motion } from "motion/react"
 import { useEffect, useRef } from "react"
 import { AbbasAvatar, type AvatarMood } from "@/components/avatar/abbas-avatar"
+import { DashiMark } from "@/components/brand"
 import { TERMINAL, type Task, type TaskEvent, type TaskStatus } from "@/lib/api"
 import { TaskProgress } from "@/components/task-progress"
 import { cn } from "@/lib/utils"
@@ -86,7 +87,7 @@ export function Conversation({ tasks, selected, onSelect, onSuggest, agentName, 
           return (
             <motion.div key={t.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
               <div className="flex flex-col items-end gap-1">
-                <div className="max-w-[85%] rounded-2xl rounded-br-md bg-brand/12 px-4 py-2.5 text-[15px] ring-1 ring-brand/20">
+                <div className="max-w-[85%] rounded-2xl rounded-br-md bg-brand px-4 py-2.5 text-[15px] text-primary-foreground shadow-sm">
                   {t.request}
                 </div>
                 <span className="flex items-center gap-1 text-[11px] text-muted-foreground/70">
@@ -101,7 +102,9 @@ export function Conversation({ tasks, selected, onSelect, onSuggest, agentName, 
                 className={cn("group flex w-full gap-3 rounded-2xl p-2 -m-2 text-left transition-colors hover:bg-accent/30",
                   selected === t.id && "bg-accent/30")}
               >
-                <AbbasAvatar mood={MOOD[t.status]} size={30} className="mt-0.5" />
+                {agentName === "Dashi"
+                  ? <DashiMark size={28} busy={active} className="mt-0.5" />
+                  : <AbbasAvatar mood={MOOD[t.status]} size={30} className="mt-0.5" />}
                 <div className="min-w-0 flex-1 text-[15px] leading-relaxed">
                   {STATUS_TEXT[t.status] && (
                     <p className={cn("mb-1 text-xs font-medium",

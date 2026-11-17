@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { API, type TaskEvent } from "@/lib/api"
+import { api, type TaskEvent } from "@/lib/api"
 
 /** Subscribes to the agent's persisted event log over SSE. EventSource reconnects on its own. */
 export function useEventStream(onEvent: (e: TaskEvent) => void) {
@@ -10,7 +10,7 @@ export function useEventStream(onEvent: (e: TaskEvent) => void) {
   handler.current = onEvent
 
   useEffect(() => {
-    const es = new EventSource(`${API}/api/events/stream`)
+    const es = new EventSource(api.eventsUrl())
     es.onopen = () => setConnected(true)
     es.onerror = () => setConnected(false)
     es.addEventListener("task_event", (msg) => {

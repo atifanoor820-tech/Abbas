@@ -51,6 +51,73 @@ export interface ConversationInfo {
   title: string
   updated_at: string
   tasks: number
+  /** Only for the admin: whose conversation this is. */
+  owner?: string
+}
+
+export interface User {
+  id: string
+  email: string
+  name: string
+  role: "user" | "admin"
+  created_at: string
+}
+
+export interface AdminUser extends User {
+  conversations: number
+}
+
+// --- Sign-in session (this browser) -------------------------------------------------------------
+const TOKEN_KEY = "dashi.token"
+const VIEW_KEY = "dashi.viewAs"
+
+function store(key: string, value: string | null) {
+  try {
+    if (value) localStorage.setItem(key, value)
+    else localStorage.removeItem(key)
+  } catch {}
+}
+function read(key: string): string | null {
+  try {
+    return localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+export const session = {
+  token: () => read(TOKEN_KEY),
+  setToken: (t: string | null) => store(TOKEN_KEY, t),
+  /** Admin only: whose data to show ("" = everyone's conversations, the admin's own Dashi accounts). */
+  viewAs: () => read(VIEW_KEY) ?? "",
+  setViewAs: (id: string) => store(VIEW_KEY, id || null),
+  clear: () => {
+    store(TOKEN_KEY, null)
+    store(VIEW_KEY, null)
+  },
+}
+
+/** Adds ?as_user=... when the admin is looking at one user's data. */
+function withScope(path: string, extra: Record<string, string> = {}): string {
+  const params = new URLSearchParams(extra)
+  const as = session.viewAs()
+  if (as) params.set("as_user", as)
+  const q = params.toString()
+  return q ? `${path}${path.includes("?") ? "&" : "?"}${q}` : path
+}
+
+function authHeaders(init?: RequestInit): HeadersInit {
+  const h = new Headers(init?.headers)
+  const t = session.token()
+  if (t) h.set("Authorization", `Bearer ${t}`)
+  return h
+}
+
+function onUnauthorized() {
+  session.clear()
+  if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+    window.location.href = "/login"
+  }
 }
 
 export interface ConversationState {
@@ -194,7 +261,8 @@ export interface SubmitResult {
 }
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API}${path}`, init)
+  const res = await fetch(`${API}${withScope(path)}`, { ...init, headers: authHeaders(init) })
+  if (res.status === 401 && !path.startsWith("/api/auth/")) onUnauthorized()
   if (!res.ok) {
     let detail = res.statusText
     try {
@@ -212,6 +280,14 @@ const json = (body: unknown): RequestInit => ({
 })
 
 export const api = {
+  signup: (email: string, password: string, name: string) =>
+    req<{ token: string; user: User }>("/api/auth/signup", json({ email, password, name })),
+  login: (email: string, password: string) =>
+    req<{ token: string; user: User }>("/api/auth/login", json({ email, password })),
+  me: () => req<User>("/api/auth/me"),
+  logout: () => req("/api/auth/logout", { method: "POST" }).catch(() => null),
+  adminUsers: () => req<AdminUser[]>("/api/admin/users"),
+  eventsUrl: () => `${API}${withScope("/api/events/stream", { token: session.token() ?? "" })}`,
   status: () => req<SystemStatus>("/api/status"),
   tasks: (conversationId: string | null) =>
     conversationId ? req<Task[]>(`/api/tasks?limit=60&conversation_id=${conversationId}`) : Promise.resolve([] as Task[]),
@@ -248,11 +324,12 @@ export const api = {
     )
   },
   speak: async (text: string): Promise<Blob> => {
-    const res = await fetch(`${API}/api/voice/speak`, json({ text }))
+    const init = json({ text })
+    const res = await fetch(`${API}/api/voice/speak`, { ...init, headers: authHeaders(init) })
     if (!res.ok) throw new Error((await res.json().catch(() => ({}))).detail ?? "speech failed")
     return res.blob()
   },
-  screenshotUrl: (name: string) => `${API}/api/screenshots/${name}`,
+  screenshotUrl: (name: string) => `${API}${withScope(`/api/screenshots/${name}`, { token: session.token() ?? "" })}`,
   getDashi: () => req<DashiConfig>("/api/dashi"),
   updateDashi: (cfg: Partial<DashiConfig>) =>
     req<DashiConfig>("/api/dashi", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cfg) }),
