@@ -54,7 +54,8 @@ export function DashiActions({ onSend, busy }: { onSend: (text: string) => Promi
   async function runUpdate(nums: string[]) {
     if (!nums.length) return
     setMode(null)
-    await onSend(`${nums.join(" ")} update karo`)
+    // One request per account, one after another: on the deployed backend each request has a ~5 minute limit.
+    for (const n of nums) await onSend(`${n} update karo`)
   }
 
   async function checkAll() {
