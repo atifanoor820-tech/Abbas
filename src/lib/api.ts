@@ -3,7 +3,7 @@ export const DASHI_ONLY = process.env.NEXT_PUBLIC_DASHI_ONLY !== "0"
 
 // Backend URL, hardcoded on purpose (no .env). Change this line to point at another backend,
 // e.g. "http://127.0.0.1:8000" for a local one.
-export const API = "https://backed-swwq.vercel.app"
+export const API = "https://backed-nv85.vercel.app"
 
 export type TaskStatus =
   | "created"
